@@ -1,3 +1,4 @@
+addSbtPlugin("com.github.sbt" % "sbt-github-actions" % "0.29.0")
 
 //addSbtPlugin("org.typelevel" % "sbt-tpolecat" % "0.5.2")
 

@@ -5,6 +5,8 @@ ThisBuild / scalaVersion := "3.3.7"
 ThisBuild / scalacOptions ++= Seq(
 )
 
+ThisBuild / githubWorkflowJavaVersions += JavaSpec.temurin("17")
+
 lazy val root = (project in file("."))
   .settings(
     name := "macro-mapper"
