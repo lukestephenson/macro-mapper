@@ -3,7 +3,6 @@ package io.github.lukestephenson.mapper
 import io.github.lukestephenson.mapper.sourcecode.SourceLocation
 
 import scala.quoted.*
-import scala.reflect.*
 
 object MapperMacros:
   inline def derived[S, T]: Mapper[S, T] = ${ derivedImpl[S, T]() }
