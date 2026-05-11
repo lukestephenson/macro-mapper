@@ -12,6 +12,7 @@ on:
     branches: ['**']
   push:
     branches: ['**']
+    tags: [v*]
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -23,7 +24,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         scala: [3.3.7]
-        java: [zulu@8, temurin@17]
+        java: [temurin@17, temurin@25, temurin@17]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout current branch (full)
@@ -31,12 +32,20 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Java (zulu@8)
-        if: matrix.java == 'zulu@8'
+      - name: Setup Java (temurin@17)
+        if: matrix.java == 'temurin@17'
         uses: actions/setup-java@v5
         with:
-          distribution: zulu
-          java-version: 8
+          distribution: temurin
+          java-version: 17
+          cache: sbt
+
+      - name: Setup Java (temurin@25)
+        if: matrix.java == 'temurin@25'
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 25
           cache: sbt
 
       - name: Setup Java (temurin@17)
@@ -68,12 +77,12 @@ jobs:
   publish:
     name: Publish Artifacts
     needs: [build]
-    if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main')
+    if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v'))
     strategy:
       matrix:
         os: [ubuntu-latest]
         scala: [3.3.7]
-        java: [zulu@8]
+        java: [temurin@17]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout current branch (full)
@@ -81,12 +90,20 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Java (zulu@8)
-        if: matrix.java == 'zulu@8'
+      - name: Setup Java (temurin@17)
+        if: matrix.java == 'temurin@17'
         uses: actions/setup-java@v5
         with:
-          distribution: zulu
-          java-version: 8
+          distribution: temurin
+          java-version: 17
+          cache: sbt
+
+      - name: Setup Java (temurin@25)
+        if: matrix.java == 'temurin@25'
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 25
           cache: sbt
 
       - name: Setup Java (temurin@17)
@@ -111,4 +128,4 @@ jobs:
           rm targets.tar
 
       - name: Publish project
-        run: sbt +publish
+        run: sbt ci-release
