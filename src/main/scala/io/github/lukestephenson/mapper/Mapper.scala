@@ -18,6 +18,17 @@ object Mapper {
     }
   }
 
+  given listMapper[T, S](using mapper: Mapper[T, S]): Mapper[List[T], List[S]] with {
+    def map(value: List[T])(using sourceLocation: SourceLocation): Either[Error, List[S]] = value.foldLeft[Either[Error, List[S]]](Right(List.empty)) { case (acc, v) =>
+      acc match {
+        case Left(error) => Left(error)
+        case Right(list) =>
+          // TODO list index in error
+          mapper.map(v).fold(error => Left(error.copy(path = sourceLocation :: error.path)), mapped => Right(mapped :: list))
+      }
+    }
+  }
+
   extension [T](inline value: T) {
     inline def as[S](using mapper: Mapper[T, S]): Either[Error, S] = {
       given SourceLocation = SourceLocation(value)
