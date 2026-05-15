@@ -49,3 +49,14 @@ lazy val root = (project in file("."))
 libraryDependencies += "org.typelevel" %% "cats-core" % "2.13.0"
 
 libraryDependencies += "org.scalameta" %% "munit" % "1.3.0" % Test
+
+lazy val docs = project
+  .in(file("macro-mapper-docs"))
+  .dependsOn(root)
+  .enablePlugins(MdocPlugin)
+  .settings(
+    mdocIn := file("docs"),
+    mdocOut := file("target/docs-site"),
+    mdocVariables := Map("VERSION" -> version.value),
+    scalacOptions ~= (_.filterNot(_.startsWith("-W")).filterNot(_ == "-Xfatal-warnings"))
+  )
