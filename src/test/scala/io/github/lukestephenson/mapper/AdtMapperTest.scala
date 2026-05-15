@@ -16,14 +16,16 @@ class AdtMapperTest extends munit.FunSuite {
     case TargetString(value: String)
   }
 
-  implicit val adtMapper: Mapper[ExampleSourceAdt, ExampleTargetAdt] with {
+  implicit val adtMapper: Mapper[ExampleSourceAdt, ExampleTargetAdt] = new Mapper[ExampleSourceAdt, ExampleTargetAdt] {
     def map(value: ExampleSourceAdt)(using sourceLocation: SourceLocation): Either[Error, ExampleTargetAdt] = {
-      val x = value match {
-        case Empty => Left(Error("Empty", sourceLocation))
+      import ExampleSourceAdt.*
+      import ExampleTargetAdt.*
+      value match {
+        case Empty => Left(Error("Empty", List(sourceLocation)))
         case SourceLong(value) => Right(TargetLong(value))
         case SourceString(value) => Right(TargetString(value))
       }
-    x
+    }
   }
 
   test("maps adts") {
