@@ -65,8 +65,11 @@ jobs:
       - name: Build project
         run: sbt '++ ${{ matrix.scala }}' test
 
+      - name: Ensure docs target directory exists
+        run: mkdir -p macro-mapper-docs/target
+
       - name: Compress target directories
-        run: tar cf targets.tar target project/target
+        run: tar cf targets.tar target macro-mapper-docs/target project/target
 
       - name: Upload target directories
         uses: actions/upload-artifact@v5
