@@ -58,5 +58,6 @@ lazy val docs = project
     mdocIn := file("docs"),
     mdocOut := file("target/docs-site"),
     mdocVariables := Map("VERSION" -> version.value),
-    scalacOptions ~= (_.filterNot(_.startsWith("-W")).filterNot(_ == "-Xfatal-warnings"))
+    scalacOptions ~= (_.filterNot(_.startsWith("-W")).filterNot(_ == "-Xfatal-warnings")),
+    publish / skip := true
   )
