@@ -28,6 +28,13 @@ ThisBuild / githubWorkflowPublishTargetBranches :=
     RefPredicate.Equals(Ref.Branch("main"))
   )
 
+ThisBuild / githubWorkflowBuildPostamble ++= Seq(
+  WorkflowStep.Run(
+    commands = List("mkdir -p macro-mapper-docs/target"),
+    name = Some("Ensure docs target directory exists")
+  )
+)
+
 ThisBuild / githubWorkflowPublish := Seq(
   WorkflowStep.Sbt(
     commands = List("ci-release"),
