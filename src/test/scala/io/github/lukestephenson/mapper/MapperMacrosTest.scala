@@ -1,6 +1,7 @@
 package io.github.lukestephenson.mapper
 
 import io.github.lukestephenson.mapper.Mapper.as
+import io.github.lukestephenson.mapper.sourcecode.SourceLocation
 
 class MapperMacrosTest extends munit.FunSuite {
 
@@ -18,6 +19,9 @@ class MapperMacrosTest extends munit.FunSuite {
 
   case class ProtoStyle(name: Option[String], age: Option[Int], inner: Option[InnerSource])
   case class DomainStyle(name: String, age: Int, inner: InnerTarget)
+
+  case class ListSource(value: List[Option[String]])
+  case class ListTarget(value: List[String])
 
   given Mapper[Source, Target] = MapperMacros.derived
   given Mapper[OptSource, PlainTarget] = MapperMacros.derived
@@ -42,7 +46,7 @@ class MapperMacrosTest extends munit.FunSuite {
     val result = source.as[PlainTarget]
     assert(result.isLeft)
     val error = result.left.toOption.get
-    assertEquals(error.message, "Unable to find value.")
+    assertEquals(error.message, "Optional value was not present.")
   }
 
   test("error path includes the field name for None option") {
@@ -89,5 +93,15 @@ class MapperMacrosTest extends munit.FunSuite {
     given Mapper[Source, Source] = MapperMacros.derived
     val result = source.as[Source]
     assertEquals(result, Right(Source("Grace", 50)))
+  }
+
+  test("error path includes the index for list failures") {
+    given Mapper[ListSource, ListTarget] = MapperMacros.derived
+    val source = ListSource(List(Some("Charlie"), None))
+    val result = source.as[ListTarget]
+    assert(result.isLeft)
+    val error = result.left.toOption.get
+    assert(error.path.nonEmpty, "error path should not be empty")
+    assert(error.path == List(SourceLocation.explicit("value[1]")))
   }
 }
