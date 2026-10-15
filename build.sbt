@@ -1,4 +1,4 @@
-ThisBuild / scalaVersion := "3.3.7"
+ThisBuild / scalaVersion := "3.3.8"
 
 ThisBuild / scalacOptions ++= Seq(
 )
@@ -53,9 +53,7 @@ lazy val root = (project in file("."))
     name := "macro-mapper"
   )
 
-libraryDependencies += "org.typelevel" %% "cats-core" % "2.13.0"
-
-libraryDependencies += "org.scalameta" %% "munit" % "1.3.0" % Test
+libraryDependencies += "org.scalameta" %% "munit" % "1.3.6" % Test
 
 lazy val docs = project
   .in(file("macro-mapper-docs"))
