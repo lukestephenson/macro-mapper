@@ -28,7 +28,6 @@ ivy"io.github.lukestephenson::macro-mapper:@VERSION@"
 ## Requirements
 
 - **Scala 3.3+** (uses Scala 3 quoted macros)
-- **cats-core** is a transitive dependency (used for standard type classes)
 
 ## Imports
 
